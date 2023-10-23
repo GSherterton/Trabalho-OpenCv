@@ -1,0 +1,1 @@
+g++ sources/*.cpp `pkg-config --cflags opencv4` `pkg-config --libs --static opencv4` -I headers -o teste
