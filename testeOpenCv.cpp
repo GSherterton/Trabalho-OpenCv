@@ -135,7 +135,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
     
     // Desenha uma imagem
-    Mat orange = cv::imread("orange.png", IMREAD_UNCHANGED);
+    Mat orange = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
 
     if(mov.inicio){
     	//mov.alturaAtual = (smallImg.rows - orange.rows);
