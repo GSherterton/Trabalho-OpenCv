@@ -103,6 +103,7 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
+    Bloco blocoAux;
     double t = 0;
     vector<Rect> faces;
     Mat gray, smallImg;
@@ -124,7 +125,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         |CASCADE_SCALE_IMAGE,
         Size(40, 40) );
     t = (double)getTickCount() - t;
-    printf( "detection time = %g ms\n", t*1000/getTickFrequency());
+    //printf( "detection time = %g ms\n", t*1000/getTickFrequency());
     // PERCORRE AS FACES ENCONTRADAS
     for ( size_t i = 0; i < faces.size(); i++ )
     {
@@ -135,21 +136,32 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
     
     // Desenha uma imagem
-    Mat orange = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
+    Mat terreno = cv::imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
+    Mat pou = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
+    //Mat orange = cv::imread("imagens/orange.png", IMREAD_UNCHANGED);
 
     if(mov.inicio){
-    	//mov.alturaAtual = (smallImg.rows - orange.rows);
-        mov.alturaMaxima = (smallImg.rows - (smallImg.rows/3) - orange.rows);
-        mov.alturaMinima = (smallImg.rows - orange.rows);
-        mov.alturaAtual = mov.alturaMaxima;
+    	//mov.alturaAtual = (smallImg.rows - pou.rows);
+        mov.tamanhoX = pou.cols;
+        mov.tamanhoY = pou.rows;
+        mov.yMaximo = (smallImg.rows - ((smallImg.rows*3)/5) + mov.tamanhoY);
+        mov.yMinimo = smallImg.rows;
+        mov.yAtual = mov.yMaximo;
         mov.gravidade = 2;
         mov.velocidadeInicial = -18;
         mov.inicio = false;
+
+        mov.deltaColisao = 5;
+    
+        blocoAux = Bloco(smallImg.cols, 0, (smallImg.rows-(smallImg.rows/20)));
+        (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
+        //cout << "Coloquei o chao\n";
     }
 
-    drawTransparency(smallImg, orange, posicaoX, mov.alturaAtual);//desenhando a laranja
+    //drawTransparency(smallImg, terreno, posicaoX, mov.yMaximo);//desenha um terreno
+    drawTransparency(smallImg, pou, posicaoX, mov.movimentoY());//desenhando o pou
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
-    printf("orang::width: %d, height=%d\n", orange.cols, orange.rows );
+    //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
 
     // Desenha quadrados com transparencia
     double alpha = 0.3;
@@ -162,7 +174,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
 
     // Desenha o frame na tela
     imshow("result", smallImg );
-    printf("image::width: %d, height=%d\n", smallImg.cols, smallImg.rows );
+    //printf("image::width: %d, height=%d\n", smallImg.cols, smallImg.rows );
 
 
     /*if(subindo){
