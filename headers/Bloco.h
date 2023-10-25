@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 class Bloco{
     public:
@@ -8,5 +9,6 @@ class Bloco{
 
         Bloco();
         Bloco(int tamanho, int posicaoX, int posicaoY);
-        //fazer um exibe para bloco
+        
+        void exibe();//fazer um exibe para bloco
 };

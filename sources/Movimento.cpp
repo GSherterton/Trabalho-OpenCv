@@ -48,6 +48,6 @@ void Movimento::mostrarBlocos(){
     }
 
     for(int i = 0; i < blocos.size(); i++){
-        cout << "Bloco na posicao (" << blocos[i].posicaoX << "," << blocos[i].posicaoY << ") de tamanho " << blocos[i].tamanho << endl;
+        blocos[i].exibe();
     }
 }
