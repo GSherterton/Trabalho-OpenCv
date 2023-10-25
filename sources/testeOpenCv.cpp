@@ -146,23 +146,28 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     	//mov.alturaAtual = (smallImg.rows - pou.rows);
         mov.tamanhoX = pou.cols;
         mov.tamanhoY = pou.rows;
+
         mov.yMaximo = (smallImg.rows - ((smallImg.rows*3)/5) + mov.tamanhoY);
         mov.yMinimo = smallImg.rows;
         mov.yAtual = mov.yMaximo;
+        mov.xAtual = smallImg.rows/2;
+
         mov.gravidade = 2;
         mov.velocidadeInicial = -18;
         mov.inicio = false;
 
-        mov.deltaColisao = 5;
+        mov.deltaColisao = 10;
     
-        blocoAux = Bloco(smallImg.cols, 0, (smallImg.rows-(smallImg.rows/20)));
+        blocoAux = Bloco(chao.cols, 0, (smallImg.rows-chao.rows));
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
-        //cout << "Coloquei o chao\n";
     }
 
+    cout << "x atual: " << mov.xAtual << endl;
+    mov.mostrarBlocos();
+
     //drawTransparency(smallImg, terreno, posicaoX, mov.yMaximo);//desenha um terreno
-    drawTransparency(smallImg, chao, 0, mov.yMaximo);//desenha o chao
-    drawTransparency(smallImg, pou, posicaoX, 0);//desenhando o pou
+    drawTransparency(smallImg, chao, 0, (smallImg.rows-chao.rows));//desenha o chao
+    drawTransparency(smallImg, pou, (mov.xAtual - pou.cols), (mov.movimentoY()-pou.rows));//desenhando o pou
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
     //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
 

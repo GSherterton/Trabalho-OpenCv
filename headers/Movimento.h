@@ -34,5 +34,5 @@ class Movimento{
         void pular();
         int movimentoY();
 
-        void mostrarBlocos();//debug
+        void mostrarBlocos();
 };

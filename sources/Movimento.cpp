@@ -10,7 +10,9 @@ Movimento::Movimento(){
 
 bool Movimento::colisao(){
     for(int i = 0; i < blocos.size(); i++){//vai ver se ha colisao com todos os blocos
+        cout << "distancia na altura para o bloco: " << abs(yAtual - blocos[i].posicaoY) << endl;
         if((abs(yAtual - blocos[i].posicaoY) <= deltaColisao) && ((xAtual >= blocos[i].posicaoX) && xAtual <= blocos[i].posicaoX + blocos[i].tamanho)){
+            cout << "Foi detectada colisao\n";
             return 1;
         }
     }
@@ -31,7 +33,7 @@ int Movimento::movimentoY(){
         subindo = false;
     }
     if(!subindo){
-        if(colisao()){//mudar o parametro para ver se houve colisao
+        if(colisao()){
             pular();
             subindo = 1;
         }
