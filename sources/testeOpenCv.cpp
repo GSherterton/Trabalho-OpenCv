@@ -56,6 +56,7 @@ int main( int argc, const char** argv ){
             char c = (char)waitKey(10);
             if( c == 27 || c == 'q' )
                 break;
+
             if(c == 81){
                 posicaoX -= 10;
             }
@@ -160,8 +161,8 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
 
     //drawTransparency(smallImg, terreno, posicaoX, mov.yMaximo);//desenha um terreno
-    drawTransparency(smallImg, chao, posicaoX, mov.yMaximo);//desenha o chao
-    drawTransparency(smallImg, pou, posicaoX, mov.movimentoY());//desenhando o pou
+    drawTransparency(smallImg, chao, 0, mov.yMaximo);//desenha o chao
+    drawTransparency(smallImg, pou, posicaoX, 0);//desenhando o pou
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
     //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
 
