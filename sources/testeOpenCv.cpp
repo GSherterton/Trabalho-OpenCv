@@ -136,6 +136,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
     
     // Desenha uma imagem
+    Mat chao = cv::imread("imagens/chao.png", IMREAD_UNCHANGED);
     Mat terreno = cv::imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
     Mat pou = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
     //Mat orange = cv::imread("imagens/orange.png", IMREAD_UNCHANGED);
@@ -159,6 +160,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     }
 
     //drawTransparency(smallImg, terreno, posicaoX, mov.yMaximo);//desenha um terreno
+    drawTransparency(smallImg, chao, posicaoX, mov.yMaximo);//desenha o chao
     drawTransparency(smallImg, pou, posicaoX, mov.movimentoY());//desenhando o pou
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
     //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
