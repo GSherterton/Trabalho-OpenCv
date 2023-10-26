@@ -16,6 +16,9 @@ string cascadeName;
 
 Movimento mov;
 
+int delta;
+int pontuacao;
+
 int main( int argc, const char** argv ){
     //iniciando uma seed aleatoria
     srand(time(NULL));
@@ -61,10 +64,10 @@ int main( int argc, const char** argv ){
                 break;
 
             if(c == 81){
-                mov.xAtual -= 10;
+                mov.xAtual -= 30;
             }
             if(c == 83){
-                mov.xAtual += 10;
+                mov.xAtual += 30;
             }
         }
     }
@@ -150,6 +153,9 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     //Mat orange = cv::imread("imagens/orange.png", IMREAD_UNCHANGED);
 
     if(mov.inicio){
+        int cria;
+        int posicaoX;
+
     	//mov.alturaAtual = (smallImg.rows - pou.rows);
         mov.tamanhoX = pou.cols;
         mov.tamanhoY = pou.rows;
@@ -164,17 +170,30 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         mov.inicio = false;
 
         mov.deltaColisao = 12;
-        mov.deltaDeslocamento = ((smallImg.cols/2) - (chao.cols/2));
+        delta = ((smallImg.cols/2) - (chao.cols/2));//esse delta é para a borda
+        pontuacao = (0 - mov.yMaximo);//colocar para que se a pontuacao ficar menor que zero na hora de exibir, colocar 0
     
         //Colocando o chao
-        blocoAux = Bloco(chao.cols, mov.deltaDeslocamento, (smallImg.rows-chao.rows));
+        blocoAux = Bloco(chao.cols, delta, (smallImg.rows-chao.rows));
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
 
-        //Colocando um terreno
-        int posicaoX = rand() % (chao.cols-terreno.cols) + mov.deltaDeslocamento;
+        //Colocando os blocos iniciais
+        for(cria = (smallImg.rows - chao.rows - delta); cria >= 0; cria--){
+            if(rand() % 2){
+                posicaoX = rand() % (chao.cols-terreno.cols) + delta;
+
+                blocoAux = Bloco(terreno.cols, posicaoX, cria);
+                (mov.blocos).push_back(blocoAux);
+
+                cria -= delta;
+            }
+        }
+
+        /*//Colocando um terreno
+        posicaoX = rand() % (chao.cols-terreno.cols) + delta;
 
         blocoAux = Bloco(terreno.cols, posicaoX, (mov.blocos[0]).posicaoY-(smallImg.rows/8));
-        (mov.blocos).push_back(blocoAux);//colocando um terreno de teste
+        (mov.blocos).push_back(blocoAux);//colocando um terreno de teste*/
     }
 
     //cout << "x atual: " << mov.xAtual << endl;
