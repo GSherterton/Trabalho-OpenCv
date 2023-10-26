@@ -4,6 +4,8 @@
 #include "opencv2/videoio.hpp"
 #include "Movimento.h"
 #include <iostream>
+#include "stdlib.h"
+#include "time.h"
 
 using namespace std;
 using namespace cv;
@@ -12,11 +14,12 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
 
 string cascadeName;
 
-int posicaoX = 450;
-
 Movimento mov;
 
 int main( int argc, const char** argv ){
+    //iniciando uma seed aleatoria
+    srand(time(NULL));
+
     VideoCapture capture;
     Mat frame;
     bool tryflip;
@@ -161,17 +164,41 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         mov.inicio = false;
 
         mov.deltaColisao = 12;
+        mov.deltaDeslocamento = ((smallImg.cols/2) - (chao.cols/2));
     
-        blocoAux = Bloco(chao.cols, 0, (smallImg.rows-chao.rows));
+        //Colocando o chao
+        blocoAux = Bloco(chao.cols, mov.deltaDeslocamento, (smallImg.rows-chao.rows));
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
+
+        //Colocando um terreno
+        int posicaoX = rand() % (chao.cols-terreno.cols) + mov.deltaDeslocamento;
+
+        blocoAux = Bloco(terreno.cols, posicaoX, (mov.blocos[0]).posicaoY-(smallImg.rows/8));
+        (mov.blocos).push_back(blocoAux);//colocando um terreno de teste
     }
 
-    cout << "x atual: " << mov.xAtual << endl;
-    mov.mostrarBlocos();
+    //cout << "x atual: " << mov.xAtual << endl;
+    //mov.mostrarBlocos();
 
-    drawTransparency(smallImg, terreno, 200, mov.yMaximo);//desenha um terreno
-    drawTransparency(smallImg, chao, 0, (smallImg.rows-chao.rows));//desenha o chao
-    drawTransparency(smallImg, pou, (mov.xAtual - pou.cols), (mov.movimentoY()-pou.rows));//desenhando o pou
+    //drawTransparency(smallImg, terreno, 200, mov.yMaximo);//desenha um terreno
+    //drawTransparency(smallImg, chao, 0, (smallImg.rows-chao.rows));//desenha o chao
+
+    //Desenha os blocos
+    if((mov.blocos).size() == 0){
+        cout << "Nao ha blocos!\n";
+    }
+
+    for(int i = 0; i < (mov.blocos).size(); i++){
+        if((mov.blocos[i]).tamanho > 200){
+            drawTransparency(smallImg, chao, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha o chao
+        }else{
+            drawTransparency(smallImg, terreno, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha um terreno
+        }
+    }
+
+    //Desenha o pou
+    drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
+
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
     //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
 

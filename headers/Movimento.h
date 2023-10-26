@@ -19,6 +19,7 @@ class Movimento{
         int yMinimo;//depois vou tirar isso para colocar inicialmente o chao como o minimo no inicio
         int xAtual;
         int deltaColisao;
+        int deltaDeslocamento;
 
         int velocidadeInicial;//sempre que ele pular vai iniciar com essa velocidade
         int velocidadeAtual;
