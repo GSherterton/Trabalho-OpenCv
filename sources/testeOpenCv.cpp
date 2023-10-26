@@ -24,7 +24,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1; // usar 1, 2, 4.//mudei isso aqui
+    scale = 2; // usar 1, 2, 4.//mudei isso aqui
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -34,8 +34,8 @@ int main( int argc, const char** argv ){
         return -1;
     }
 
-    //if(!capture.open("video.mp4")) // para testar com um video
-    if(!capture.open(0)) // para testar com a webcam
+    if(!capture.open("video.mp4")) // para testar com um video
+    //if(!capture.open(0)) // para testar com a webcam
     //if(!capture.open("rtsp://10.204.238.71:8080/h264_ulaw.sdp")) // tentar conectar no celular
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -53,15 +53,15 @@ int main( int argc, const char** argv ){
 
             detectAndDraw( frame, cascade, scale, tryflip );
 
-            char c = (char)waitKey(10);
+            char c = (char)waitKey(1);
             if( c == 27 || c == 'q' )
                 break;
 
             if(c == 81){
-                posicaoX -= 10;
+                mov.xAtual -= 10;
             }
             if(c == 83){
-                posicaoX += 10;
+                mov.xAtual += 10;
             }
         }
     }
@@ -132,8 +132,8 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     {
         Rect r = faces[i];
 
-        Mat pou2 = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
-        drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, r.y + r.height/2 -pou2.cols/2);
+        /*Mat pou2 = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
+        drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, r.y + r.height/2 -pou2.cols/2);*/
 
         rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)),
                     Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
@@ -157,10 +157,10 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         mov.xAtual = smallImg.rows/2;
 
         mov.gravidade = 2;
-        mov.velocidadeInicial = -18;
+        mov.velocidadeInicial = -24;
         mov.inicio = false;
 
-        mov.deltaColisao = 10;
+        mov.deltaColisao = 12;
     
         blocoAux = Bloco(chao.cols, 0, (smallImg.rows-chao.rows));
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
@@ -169,7 +169,7 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     cout << "x atual: " << mov.xAtual << endl;
     mov.mostrarBlocos();
 
-    //drawTransparency(smallImg, terreno, posicaoX, mov.yMaximo);//desenha um terreno
+    drawTransparency(smallImg, terreno, 200, mov.yMaximo);//desenha um terreno
     drawTransparency(smallImg, chao, 0, (smallImg.rows-chao.rows));//desenha o chao
     drawTransparency(smallImg, pou, (mov.xAtual - pou.cols), (mov.movimentoY()-pou.rows));//desenhando o pou
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
