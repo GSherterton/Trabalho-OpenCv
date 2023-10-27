@@ -30,7 +30,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 2; // usar 1, 2, 4.//mudei isso aqui
+    scale = 1; // usar 1, 2, 4.//mudei isso aqui
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -40,8 +40,8 @@ int main( int argc, const char** argv ){
         return -1;
     }
 
-    if(!capture.open("video.mp4")) // para testar com um video
-    //if(!capture.open(0)) // para testar com a webcam
+    //if(!capture.open("video.mp4")) // para testar com um video
+    if(!capture.open(0)) // para testar com a webcam
     //if(!capture.open("rtsp://10.204.238.71:8080/h264_ulaw.sdp")) // tentar conectar no celular
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -134,12 +134,14 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     t = (double)getTickCount() - t;
     //printf( "detection time = %g ms\n", t*1000/getTickFrequency());
     // PERCORRE AS FACES ENCONTRADAS
+    Mat pou2 = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
+
     for ( size_t i = 0; i < faces.size(); i++ )
     {
         Rect r = faces[i];
 
-        /*Mat pou2 = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
-        drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, r.y + r.height/2 -pou2.cols/2);*/
+        //drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, r.y + r.height/2 -pou2.cols/2); // desenha no centro
+        drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, (mov.movimentoY()-pou2.rows)); // acompanha em x
 
         rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)),
                     Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
@@ -158,7 +160,9 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
 
     	//mov.alturaAtual = (smallImg.rows - pou.rows);
         mov.tamanhoX = pou.cols;
-        mov.tamanhoY = pou.rows;
+        // mov.tamanhoY = pou.rows;
+        
+        mov.tamanhoY = pou2.rows;
 
         mov.yMaximo = (smallImg.rows - ((smallImg.rows*3)/5) + mov.tamanhoY);
         mov.yMinimo = smallImg.rows;
@@ -215,8 +219,10 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         }
     }
 
+    /*
     //Desenha o pou
     drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
+    */
 
     //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
     //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
