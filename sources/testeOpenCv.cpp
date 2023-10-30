@@ -30,7 +30,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1; // usar 1, 2, 4.//mudei isso aqui
+    scale = 1.3; // usar 1, 2, 4.//mudei isso aqui
     if (scale < 1)
         scale = 1;
     tryflip = true;
