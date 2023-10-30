@@ -31,11 +31,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-<<<<<<< HEAD
     scale = 1.5; // usar 1, 2, 4.//mudei isso aqui
-=======
-    scale = 1.3; // usar 1, 2, 4.//mudei isso aqui
->>>>>>> 48533dccc05be03b5fd190d221ac0caf3f89fbc8
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -112,6 +108,8 @@ void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
     Mat rectImg(roi.size(), CV_8UC3, color); 
     addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
 }
+
+void drawBlocos(Mat )
 
 void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
 {
