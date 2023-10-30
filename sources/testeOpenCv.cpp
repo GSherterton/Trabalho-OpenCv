@@ -127,32 +127,13 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     equalizeHist( gray, gray );
 
     t = (double)getTickCount();
-
-    
-
     cascade.detectMultiScale(gray, faces, 1.3, 5);
-    /*
-    cascade.detectMultiScale( gray, faces,
-        1.3, 2, 0
-        //|CASCADE_FIND_BIGGEST_OBJECT
-        //|CASCADE_DO_ROUGH_SEARCH
-        |CASCADE_SCALE_IMAGE,
-        Size(40, 40) );
-    */
-
     t = (double)getTickCount() - t;
-    //printf( "detection time = %g ms\n", t*1000/getTickFrequency());
-    // PERCORRE AS FACES ENCONTRADAS
-    //Mat pou2 = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
 
-    for ( size_t i = 0; i < faces.size(); i++ )
-    {
+    for ( size_t i = 0; i < faces.size(); i++ ){
         Rect r = faces[i];
 
-        
-        //drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, r.y + r.height/2 -pou2.cols/2); // desenha no centro
-        //drawTransparency(smallImg, pou2, r.x + r.width/2 - pou2.rows/2, (mov.movimentoY()-pou2.rows)); // acompanha em x
-
+        if(r.x + r.width/2 + 6 >= deltaX && r.x + r.width/2 <= smallImg.cols - deltaX - 6 )
         mov.xAtual = r.x + r.width/2 ;
 
         rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)),
