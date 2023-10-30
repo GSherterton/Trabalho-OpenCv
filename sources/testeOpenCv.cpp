@@ -16,7 +16,8 @@ string cascadeName;
 
 Movimento mov;
 
-int delta;
+int deltaX;
+int deltaY;
 int pontuacao;
 
 int main( int argc, const char** argv ){
@@ -30,7 +31,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1; // usar 1, 2, 4.//mudei isso aqui
+    scale = 1.5; // usar 1, 2, 4.//mudei isso aqui
     if (scale < 1)
         scale = 1;
     tryflip = true;
@@ -40,8 +41,8 @@ int main( int argc, const char** argv ){
         return -1;
     }
 
-    //if(!capture.open("video.mp4")) // para testar com um video
-    if(!capture.open(0)) // para testar com a webcam
+    if(!capture.open("video.mp4")) // para testar com um video
+    //if(!capture.open(0)) // para testar com a webcam
     //if(!capture.open("rtsp://10.204.238.71:8080/h264_ulaw.sdp")) // tentar conectar no celular
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -183,22 +184,23 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
         mov.inicio = false;
 
         mov.deltaColisao = 12;
-        delta = ((smallImg.cols/2) - (chao.cols/2));//esse delta é para a borda
+        deltaX = ((smallImg.cols/2) - (chao.cols/2));//esse delta é para a borda
+        deltaY = ((smallImg.rows/6));
         pontuacao = (0 - mov.yMaximo);//colocar para que se a pontuacao ficar menor que zero na hora de exibir, colocar 0
     
         //Colocando o chao
-        blocoAux = Bloco(chao.cols, delta, (smallImg.rows-chao.rows));
+        blocoAux = Bloco(chao.cols, deltaX, (smallImg.rows-chao.rows));
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
 
         //Colocando os blocos iniciais
-        for(cria = (smallImg.rows - chao.rows - delta); cria >= 0; cria--){
+        for(cria = (smallImg.rows - chao.rows - deltaY); cria >= 0; cria--){
             if(rand() % 2){
-                posicaoX = rand() % (chao.cols-terreno.cols) + delta;
+                posicaoX = rand() % (chao.cols-terreno.cols) + deltaX;
 
                 blocoAux = Bloco(terreno.cols, posicaoX, cria);
                 (mov.blocos).push_back(blocoAux);
 
-                cria -= delta;
+                cria -= deltaY;
             }
         }
 
