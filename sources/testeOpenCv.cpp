@@ -1,7 +1,4 @@
-#include "opencv2/objdetect.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/videoio.hpp"
+#include <opencv2/opencv.hpp>
 #include "Movimento.h"
 #include <iostream>
 #include "stdlib.h"
@@ -201,8 +198,8 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
     
     // Desenha um texto
-    color = Scalar(0,0,255);
-    putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
+    //color = Scalar(0,0,255);
+    //putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
 
     // Desenha o frame na tela
     imshow("result", smallImg );
