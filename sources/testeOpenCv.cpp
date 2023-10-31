@@ -20,6 +20,11 @@ int deltaX;
 int deltaY;
 int pontuacao;
 
+//leitura das imagens
+Mat chao = cv::imread("imagens/chao.png", IMREAD_UNCHANGED);
+Mat terreno = cv::imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
+Mat pou = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
+
 int main( int argc, const char** argv ){
     //iniciando uma seed aleatoria
     srand(time(NULL));
@@ -31,9 +36,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1.5; // usar 1, 2, 4.//mudei isso aqui
-    if (scale < 1)
-        scale = 1;
+    scale = 1; // usar 1, 2, 4.//mudei isso aqui
     tryflip = true;
 
     if (!cascade.load(cascadeName)) {
@@ -41,35 +44,26 @@ int main( int argc, const char** argv ){
         return -1;
     }
 
-    if(!capture.open("video.mp4")) // para testar com um video
-    //if(!capture.open(0)) // para testar com a webcam
+    //if(!capture.open("video.mp4")) // para testar com um video
+    if(!capture.open(0)) // para testar com a webcam
     //if(!capture.open("rtsp://10.204.238.71:8080/h264_ulaw.sdp")) // tentar conectar no celular
     {
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
     }
 
-    if( capture.isOpened() ) {
+    if(capture.isOpened()){
         cout << "Video capturing has been started ..." << endl;
 
-        while (1)
-        {
+        while(1){
             capture >> frame;
-            if( frame.empty() )
-                break;
+            if(frame.empty()) break;
 
-            detectAndDraw( frame, cascade, scale, tryflip );
+            detectAndDraw(frame, cascade, scale, tryflip);
 
+            // detecta saida do programa
             char c = (char)waitKey(1);
-            if( c == 27 || c == 'q' )
-                break;
-
-            if(c == 81){
-                mov.xAtual -= 30;
-            }
-            if(c == 83){
-                mov.xAtual += 30;
-            }
+            if(c == 27 || c == 'q') break;
         }
     }
 
@@ -84,7 +78,7 @@ int main( int argc, const char** argv ){
  * @param xPos x position of the frame image where the image will start.
  * @param yPos y position of the frame image where the image will start.
  */
-void drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
+void drawTransparency(Mat frame, Mat transp, int xPos, int yPos){
     Mat mask;
     vector<Mat> layers;
 
@@ -103,16 +97,13 @@ void drawTransparency(Mat frame, Mat transp, int xPos, int yPos) {
  * @param alpha transparence level. 0 is 100% transparent, 1 is opaque.
  * @param regin rect region where the should be positioned
  */
-void drawTransRect(Mat frame, Scalar color, double alpha, Rect region) {
+void drawTransRect(Mat frame, Scalar color, double alpha, Rect region){
     Mat roi = frame(region);
     Mat rectImg(roi.size(), CV_8UC3, color); 
     addWeighted(rectImg, alpha, roi, 1.0 - alpha , 0, roi); 
 }
 
-void drawBlocos(Mat )
-
-void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool tryflip)
-{
+void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip){
     Bloco blocoAux;
     double t = 0;
     vector<Rect> faces;
@@ -130,22 +121,14 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     cascade.detectMultiScale(gray, faces, 1.3, 5);
     t = (double)getTickCount() - t;
 
-    for ( size_t i = 0; i < faces.size(); i++ ){
+    for(size_t i = 0; i < faces.size(); i++){
         Rect r = faces[i];
 
-        if(r.x + r.width/2 + 6 >= deltaX && r.x + r.width/2 <= smallImg.cols - deltaX - 6 )
-        mov.xAtual = r.x + r.width/2 ;
+        if(r.x + r.width/2 - 10 >= deltaX && r.x + r.width/2 <= smallImg.cols - deltaX - 10) mov.xAtual = r.x + r.width/2 ;
 
-        rectangle( smallImg, Point(cvRound(r.x), cvRound(r.y)),
-                    Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))),
-                    color, 3);
+        rectangle(smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
     
-    // Desenha uma imagem
-    Mat chao = cv::imread("imagens/chao.png", IMREAD_UNCHANGED);
-    Mat terreno = cv::imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
-    Mat pou = cv::imread("imagens/pou.png", IMREAD_UNCHANGED);
-    //Mat orange = cv::imread("imagens/orange.png", IMREAD_UNCHANGED);
 
     if(mov.inicio){
         int cria;
@@ -217,15 +200,6 @@ void detectAndDraw( Mat& img, CascadeClassifier& cascade, double scale, bool try
     //Desenha o pou
     drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
     
-
-    //drawTransparency(smallImg, orange, posicaoX, mov.movimentoY());//desenhando a laranja
-    //printf("pou::width: %d, height=%d\n", pou.cols, pou.rows);
-
-    // Desenha quadrados com transparencia
-    double alpha = 0.3;
-    drawTransRect(smallImg, Scalar(0,255,0), alpha, Rect(  0, 0, 200, 200));
-    drawTransRect(smallImg, Scalar(255,0,0), alpha, Rect(200, 0, 200, 200));
-
     // Desenha um texto
     color = Scalar(0,0,255);
     putText	(smallImg, "Placar:", Point(300, 50), FONT_HERSHEY_PLAIN, 2, color); // fonte
