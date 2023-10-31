@@ -12,7 +12,7 @@ bool Movimento::colisao(){
     for(int i = 0; i < blocos.size(); i++){//vai ver se ha colisao com todos os blocos
         //cout << "distancia na altura para o bloco: " << abs(yAtual - blocos[i].posicaoY) << endl;
         if((abs(yAtual - blocos[i].posicaoY) <= deltaColisao) && ((xAtual >= blocos[i].posicaoX) && xAtual <= blocos[i].posicaoX + blocos[i].tamanho)){
-            //cout << "Foi detectada colisao\n";
+            system("mplayer audios/jump.mp3 &");
             return 1;
         }
     }
