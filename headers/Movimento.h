@@ -14,6 +14,7 @@ class Movimento{
         int tamanhoX;
         int tamanhoY;
 
+        int qtdSubiu;
         int yAtual;
         int yMaximo;//com relacao a yAtual
         int yMinimo;//depois vou tirar isso para colocar inicialmente o chao como o minimo no inicio

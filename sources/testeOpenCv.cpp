@@ -33,7 +33,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 2; // usar 1, 2, 4.//mudei isso aqui
+    scale = 1.5; // usar 1, 2, 4.//mudei isso aqui
     tryflip = true;
 
     if (!cascade.load(cascadeName)) {
@@ -67,13 +67,13 @@ int main( int argc, const char** argv ){
                 mov.subir(10);
             }
             if(c == 'h'){//andar muito para a esquerda
-                mov.xAtual -= 30;
+                mov.xAtual -= 50;
             }
             if(c == 'l'){//andar muito para a direita
-                mov.xAtual += 30;
+                mov.xAtual += 50;
             }
             if(c == 'j'){//andar um pouco para a esquerda
-                mov.xAtual -= 10;
+                mov.xAtual -= 30;
             }
             if(c == 'k'){//andar um pouco para a direita
                 mov.xAtual += 30;
@@ -206,16 +206,19 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     }
 
     //gerando blocos a medida que sobe
-    /*for(cria = (smallImg.rows - chao.rows - deltaY); cria >= -deltaY; cria--){//colocando parametros manuais | mudar dps
+    if(mov.qtdSubiu > deltaY){
         if(rand() % 2){
+            int posicaoX;
+
             posicaoX = rand() % (chao.cols-terreno.cols) + deltaX;
 
-            blocoAux = Bloco(terreno.cols, terreno.rows, posicaoX, cria);
+            blocoAux = Bloco(terreno.cols, terreno.rows, posicaoX, (mov.blocos[(mov.blocos).size()-1]).posicaoY - mov.qtdSubiu);
             (mov.blocos).push_back(blocoAux);
 
-            cria -= deltaY;
+            mov.qtdSubiu = 0;
+            cout << "Gerou bloco\n";
         }
-    }*/
+    }
 
     //Desenha os blocos
     if((mov.blocos).size() == 0){
