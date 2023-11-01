@@ -33,7 +33,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1.5; // usar 1, 2, 4.//mudei isso aqui
+    scale = 2; // usar 1, 2, 4.//mudei isso aqui
     tryflip = true;
 
     if (!cascade.load(cascadeName)) {
@@ -65,6 +65,18 @@ int main( int argc, const char** argv ){
             }
             if(c == 'w'){//subir a tela
                 mov.subir(10);
+            }
+            if(c == 'h'){//andar muito para a esquerda
+                mov.xAtual -= 30;
+            }
+            if(c == 'l'){//andar muito para a direita
+                mov.xAtual += 30;
+            }
+            if(c == 'j'){//andar um pouco para a esquerda
+                mov.xAtual -= 10;
+            }
+            if(c == 'k'){//andar um pouco para a direita
+                mov.xAtual += 30;
             }
         }
     }
@@ -127,7 +139,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         Rect r = faces[i];
 
         if(((r.x + (r.width/2)) >= (deltaX + mov.tamanhoX)) && ((r.x + r.width/2) <= (smallImg.cols - deltaX - mov.tamanhoX))){
-            mov.xAtual = (r.x + r.width/2);
+            //mov.xAtual = (r.x + r.width/2);//fazendo a movimentacao manual devido a falta de camera
         }
 
         rectangle(smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
@@ -144,16 +156,16 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         
         mov.tamanhoY = pou.rows;
 
-        mov.yMaximo = (smallImg.rows - ((smallImg.rows*3)/5) + mov.tamanhoY);
+        mov.yMaximo = smallImg.rows/2;
         mov.yMinimo = smallImg.rows;
         mov.yAtual = mov.yMaximo;
-        mov.xAtual = smallImg.rows/2;
+        mov.xAtual = smallImg.cols/2;
 
         mov.gravidade = 2;
         mov.velocidadeInicial = -24;
         mov.inicio = false;
 
-        mov.deltaColisao = 12;
+        mov.deltaColisaoBase = 12;
         deltaX = ((smallImg.cols/2) - (chao.cols/2));//esse delta é para a borda
         deltaY = ((smallImg.rows/6));
         pontuacao = (0 - mov.yMaximo);//colocar para que se a pontuacao ficar menor que zero na hora de exibir, colocar 0
@@ -163,7 +175,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
 
         //Colocando os blocos iniciais
-        for(cria = (smallImg.rows - chao.rows - deltaY); cria >= -100; cria--){//colocando parametros manuais | mudar dps
+        for(cria = (smallImg.rows - chao.rows - deltaY); cria >= -deltaY; cria--){//colocando parametros manuais | mudar dps
             if(rand() % 2){
                 posicaoX = rand() % (chao.cols-terreno.cols) + deltaX;
 
@@ -187,6 +199,24 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     //drawTransparency(smallImg, terreno, 200, mov.yMaximo);//desenha um terreno
     //drawTransparency(smallImg, chao, 0, (smallImg.rows-chao.rows));//desenha o chao
 
+    //verifica se algum bloco ja desceu
+    if((mov.blocos[0]).posicaoY > smallImg.rows){
+        mov.deletaBloco(0);
+        cout << "Bloco deletado\n";
+    }
+
+    //gerando blocos a medida que sobe
+    /*for(cria = (smallImg.rows - chao.rows - deltaY); cria >= -deltaY; cria--){//colocando parametros manuais | mudar dps
+        if(rand() % 2){
+            posicaoX = rand() % (chao.cols-terreno.cols) + deltaX;
+
+            blocoAux = Bloco(terreno.cols, terreno.rows, posicaoX, cria);
+            (mov.blocos).push_back(blocoAux);
+
+            cria -= deltaY;
+        }
+    }*/
+
     //Desenha os blocos
     if((mov.blocos).size() == 0){
         cout << "Nao ha blocos!\n";
@@ -204,7 +234,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     
     //Desenha o pou
-    //drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
+    drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
     
     // Desenha um texto
     //color = Scalar(0,0,255);

@@ -8,11 +8,26 @@ Movimento::Movimento(){
     velocidadeAtual = 0;
 }
 
+void Movimento::deletaBloco(int index){
+    blocos.erase(blocos.begin() + index);
+}
+
+int Movimento::deltaColisao(){
+    if(velocidadeAtual > 10){
+        return deltaColisaoBase*(1. + (((float)velocidadeAtual-10)/20.));
+    }
+
+    return deltaColisaoBase;
+}
+
 bool Movimento::colisao(){
     for(int i = 0; i < blocos.size(); i++){//vai ver se ha colisao com todos os blocos
-        //cout << "distancia na altura para o bloco: " << abs(yAtual - blocos[i].posicaoY) << endl;
-        if((abs(yAtual - blocos[i].posicaoY) <= deltaColisao) && ((xAtual >= blocos[i].posicaoX) && xAtual <= blocos[i].posicaoX + blocos[i].tamanhoX)){
-            system("mplayer audios/jump.mp3 &");
+        if(abs(yAtual - blocos[i].posicaoY) < 100){
+            cout << "distancia na altura para o bloco " << i << ": " << abs(yAtual - blocos[i].posicaoY) << endl;
+        }
+        if((abs(yAtual - blocos[i].posicaoY) <= deltaColisao()) && ((xAtual >= blocos[i].posicaoX) && xAtual <= blocos[i].posicaoX + blocos[i].tamanhoX)){
+            cout << "Foi detectada colisao\n";
+            system("mplayer -msglevel all=-1 audios/jump.mp3 &");//tirei para debugar pq fica aparecendo no terminal
             return 1;
         }
     }
@@ -38,7 +53,14 @@ int Movimento::movimentoY(){
             subindo = 1;
         }
     }
-    yAtual += velocidadeAtual;
+
+    if(subindo && (yAtual <= yMaximo)){
+        subir(-velocidadeAtual);
+    }else{
+        yAtual += velocidadeAtual;
+        //cout << "Velocidade Atual: " << velocidadeAtual << endl;
+    }
+    
     velocidade();
 
     return yAtual;
