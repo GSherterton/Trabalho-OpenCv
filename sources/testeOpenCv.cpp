@@ -167,7 +167,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
         mov.deltaColisaoBase = 12;
         deltaX = ((smallImg.cols/2) - (chao.cols/2));//esse delta é para a borda
-        deltaY = ((smallImg.rows/6));
+        deltaY = ((smallImg.rows/7));
         pontuacao = (0 - mov.yMaximo);//colocar para que se a pontuacao ficar menor que zero na hora de exibir, colocar 0
     
         //Colocando o chao
@@ -225,19 +225,42 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         cout << "Nao ha blocos!\n";
     }
 
+    Rect crop;
+    Mat exemp;
+
     for(int i = 0; i < (mov.blocos).size(); i++){
-        if(((mov.blocos[i]).posicaoY >= 0) && ((mov.blocos[i]).posicaoY <= (smallImg.rows-(mov.blocos[i]).tamanhoY))){//colocando um if primeiro para nao desenhar um bloco que esteja acima da tela
-            if((mov.blocos[i]).tamanhoX > 200){
-                drawTransparency(smallImg, chao, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha o chao
-            }else{
-                drawTransparency(smallImg, terreno, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha um terreno
+        if(((mov.blocos[i]).posicaoY >= 0)){
+            if(((mov.blocos[i]).posicaoY <= (smallImg.rows-(mov.blocos[i]).tamanhoY))){//colocando um if primeiro para nao desenhar um bloco que esteja acima da tela
+                if((mov.blocos[i]).tamanhoX > 200){
+                    drawTransparency(smallImg, chao, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha o chao
+                }else{
+                    drawTransparency(smallImg, terreno, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha um terreno
+                }
+            }else if((mov.blocos[i]).posicaoY < smallImg.rows){//recortar o bloco que esta quase descendo
+                cout << "Entrei aqui no i = " << i << endl;
+                crop = Rect(0, 0, (mov.blocos[i]).tamanhoX, smallImg.rows - (mov.blocos[i]).posicaoY);
+                
+                if((mov.blocos[i]).tamanhoX > 200){    
+                    exemp = chao(crop);
+                    drawTransparency(smallImg, exemp, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha o chao
+                }else{
+                    exemp = terreno(crop);
+                    drawTransparency(smallImg, exemp, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha um terreno
+                }
             }
         }
     }
 
     
     //Desenha o pou
-    drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
+    cout << "Altura atual: " << mov.yAtual << endl;
+    if(mov.movimentoY() > smallImg.rows){
+        cout << "Perdeu!\n";
+        return;//perdeu
+    }else{
+        drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.yAtual-pou.rows));//desenhando o pou
+    }
+    
     
     // Desenha um texto
     //color = Scalar(0,0,255);
