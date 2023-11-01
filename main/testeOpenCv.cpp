@@ -157,7 +157,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         mov.tamanhoY = pou.rows;
 
         mov.yMaximo = smallImg.rows/2;
-        mov.yMinimo = smallImg.rows;
+        //mov.yMinimo = smallImg.rows;
         mov.yAtual = mov.yMaximo;
         mov.xAtual = smallImg.cols/2;
 

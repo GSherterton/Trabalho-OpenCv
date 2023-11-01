@@ -11,5 +11,5 @@ class Bloco{
         Bloco();
         Bloco(int tamanhoX, int tamanhoY, int posicaoX, int posicaoY);
         
-        void exibe();//fazer um exibe para bloco
+        void exibe();
 };

@@ -5,5 +5,5 @@ using namespace std;
 int main(){
     Jogo skyJump;
 
-    skyJump.inicio();
+    return skyJump.inicio();
 }
