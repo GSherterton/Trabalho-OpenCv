@@ -60,7 +60,12 @@ int main( int argc, const char** argv ){
 
             // detecta saida do programa
             char c = (char)waitKey(1);
-            if(c == 27 || c == 'q') break;
+            if(c == 27 || c == 'q'){
+                break;
+            }
+            if(c == 'w'){//subir a tela
+                mov.subir(10);
+            }
         }
     }
 
@@ -154,15 +159,15 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
         pontuacao = (0 - mov.yMaximo);//colocar para que se a pontuacao ficar menor que zero na hora de exibir, colocar 0
     
         //Colocando o chao
-        blocoAux = Bloco(chao.cols, deltaX, (smallImg.rows-chao.rows));
+        blocoAux = Bloco(chao.cols, chao.rows, deltaX, (smallImg.rows-chao.rows));
         (mov.blocos).push_back(blocoAux);//colocando o chão inicial, lembrar depois de tirar ele
 
         //Colocando os blocos iniciais
-        for(cria = (smallImg.rows - chao.rows - deltaY); cria >= 0; cria--){
+        for(cria = (smallImg.rows - chao.rows - deltaY); cria >= -100; cria--){//colocando parametros manuais | mudar dps
             if(rand() % 2){
                 posicaoX = rand() % (chao.cols-terreno.cols) + deltaX;
 
-                blocoAux = Bloco(terreno.cols, posicaoX, cria);
+                blocoAux = Bloco(terreno.cols, terreno.rows, posicaoX, cria);
                 (mov.blocos).push_back(blocoAux);
 
                 cria -= deltaY;
@@ -188,16 +193,18 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     }
 
     for(int i = 0; i < (mov.blocos).size(); i++){
-        if((mov.blocos[i]).tamanho > 200){
-            drawTransparency(smallImg, chao, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha o chao
-        }else{
-            drawTransparency(smallImg, terreno, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha um terreno
+        if(((mov.blocos[i]).posicaoY >= 0) && ((mov.blocos[i]).posicaoY <= (smallImg.rows-(mov.blocos[i]).tamanhoY))){//colocando um if primeiro para nao desenhar um bloco que esteja acima da tela
+            if((mov.blocos[i]).tamanhoX > 200){
+                drawTransparency(smallImg, chao, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha o chao
+            }else{
+                drawTransparency(smallImg, terreno, (mov.blocos[i]).posicaoX, (mov.blocos[i]).posicaoY);//desenha um terreno
+            }
         }
     }
 
     
     //Desenha o pou
-    drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
+    //drawTransparency(smallImg, pou, (mov.xAtual - (pou.cols/2)), (mov.movimentoY()-pou.rows));//desenhando o pou
     
     // Desenha um texto
     //color = Scalar(0,0,255);

@@ -34,6 +34,7 @@ class Movimento{
         int velocidade();
         void pular();
         int movimentoY();
+        void subir(int distancia);
 
         void mostrarBlocos();
 };

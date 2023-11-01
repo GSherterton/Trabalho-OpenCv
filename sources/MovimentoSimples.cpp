@@ -23,7 +23,7 @@ void MovimentoSimples::modificaVelocidade(){
 
 bool MovimentoSimples::verificaColisao(){
     for(int i = 0; i < blocos.size(); i++){
-        if((abs(yPou - blocos[i].posicaoY)) < 4 && (xPou >= blocos[i].posicaoX) && xPou <= blocos[i].posicaoX + blocos[i].tamanho){
+        if((abs(yPou - blocos[i].posicaoY)) < 4 && (xPou >= blocos[i].posicaoX) && xPou <= blocos[i].posicaoX + blocos[i].tamanhoX){
             return true;
         }
     }
