@@ -33,7 +33,7 @@ int main( int argc, const char** argv ){
     double scale;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1; // usar 1, 2, 4.//mudei isso aqui
+    scale = 1.5; // usar 1, 2, 4.//mudei isso aqui
     tryflip = true;
 
     if (!cascade.load(cascadeName)) {
@@ -41,8 +41,8 @@ int main( int argc, const char** argv ){
         return -1;
     }
 
-    //if(!capture.open("video.mp4")) // para testar com um video
-    if(!capture.open(0)) // para testar com a webcam
+    if(!capture.open("video.mp4")) // para testar com um video
+    //if(!capture.open(0)) // para testar com a webcam
     //if(!capture.open("rtsp://10.204.238.71:8080/h264_ulaw.sdp")) // tentar conectar no celular
     {
         cout << "Capture from camera #0 didn't work" << endl;
@@ -121,7 +121,9 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
     for(size_t i = 0; i < faces.size(); i++){
         Rect r = faces[i];
 
-        if(r.x + r.width/2 - 10 >= deltaX && r.x + r.width/2 <= smallImg.cols - deltaX - 10) mov.xAtual = r.x + r.width/2 ;
+        if(((r.x + (r.width/2)) >= (deltaX + mov.tamanhoX)) && ((r.x + r.width/2) <= (smallImg.cols - deltaX - mov.tamanhoX))){
+            mov.xAtual = (r.x + r.width/2);
+        }
 
         rectangle(smallImg, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
@@ -133,7 +135,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryf
 
     	//mov.alturaAtual = (smallImg.rows - pou.rows);
         mov.tamanhoX = pou.cols;
-        // mov.tamanhoY = pou.rows;
+        mov.tamanhoY = pou.rows;
         
         mov.tamanhoY = pou.rows;
 
