@@ -4,7 +4,6 @@
 #include <iostream>
 #include "stdlib.h"
 #include "time.h"
-#include "Menu.h"
 
 using namespace std;
 using namespace cv;
@@ -12,8 +11,8 @@ using namespace cv;
 class Jogo{//tem que fazer mudancas com relacao aos blocos
     public:
         Movimento mov;
-        Menu menu;
         int pontuacao;
+        int menu;
 
         int deltaX;//distancia da borda
         int deltaY;//distancia minima de um bloco para o outro
@@ -23,6 +22,10 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Mat terreno;
         Mat pou;
 
+        int larguraTela;
+        int alturaTela;
+
+        bool comecouJogo;
         bool perdeu;
 
         Bloco blocoAux;
@@ -30,12 +33,9 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         string cascadeName;
         VideoCapture capture;//captura da camera
         Mat frame;//matriz geral
-        Mat quadro;//matriz geral redimensionada
         bool tryflip;//inverter a camera
         CascadeClassifier cascade;
         double scale;
-
-        void mostrarBlocos();
 
         void gerarBlocosIniciais();
 
@@ -43,14 +43,16 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
 
         void verificaBlocos();
         void geraBlocos();
-        void desenhaBlocos();
-        void desenhaPou();
+        void desenhaBlocos(Mat& quadro);
+        void desenhaPou(Mat& quadro);
 
         void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
         void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
-        void detectAndDraw(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
-
-        void jogar();
+        void desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
+        int desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
+        void conquistas();
+        
+        void menuInicio();
         int inicio();
 
 };

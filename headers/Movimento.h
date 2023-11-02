@@ -27,10 +27,13 @@ class Movimento{
         Movimento();
 
         void deletaBloco(int index);
+        void deletaBlocos();
         int deltaColisao();
         bool colisao();
         int velocidade();
         void pular();
         int movimentoY();
         void subir(int distancia);
+
+        void mostrarBlocos();
 };

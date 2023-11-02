@@ -13,6 +13,10 @@ void Movimento::deletaBloco(int index){
     bloco.erase(bloco.begin() + index);
 }
 
+void Movimento::deletaBlocos(){
+    bloco.erase(bloco.begin(), bloco.end());
+}
+
 int Movimento::deltaColisao(){
     if(velocidadeAtual > 10){
         return deltaColisaoBase*(1. + (((float)velocidadeAtual-10)/20.));
@@ -23,11 +27,8 @@ int Movimento::deltaColisao(){
 
 bool Movimento::colisao(){
     for(int i = 0; i < bloco.size(); i++){//vai ver se ha colisao com todos os blocos
-        /*if(abs(yAtual - blocos[i].posicaoY) < 100){
-            cout << "distancia na altura para o bloco " << i << ": " << abs(yAtual - blocos[i].posicaoY) << endl;
-        }*/
         if((abs(yAtual - bloco[i].posicaoY) <= deltaColisao()) && ((xAtual >= bloco[i].posicaoX) && xAtual <= bloco[i].posicaoX + bloco[i].tamanhoX)){
-            cout << "Foi detectada colisao\n";
+            //cout << "Foi detectada colisao\n";
             system("mplayer -msglevel all=-1 audios/jump.mp3 &");//tirei para debugar pq fica aparecendo no terminal
             return 1;
         }
@@ -71,5 +72,15 @@ void Movimento::subir(int distancia){
     qtdSubiu += distancia;
     for(int i = 0; i < bloco.size(); i++){
         bloco[i].posicaoY += distancia;
+    }
+}
+
+void Movimento::mostrarBlocos(){
+    if(bloco.size() == 0){
+        cout << "Nao ha nenhum bloco\n";
+    }
+
+    for(int i = 0; i < bloco.size(); i++){
+        bloco[i].exibe();
     }
 }
