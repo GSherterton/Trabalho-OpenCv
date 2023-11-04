@@ -14,6 +14,12 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         int pontuacao;
         int menu;
         int tempoSelecionado;
+        int tempoBase;//tempo base para a selecao de algo
+        int selecao;
+        int selecaoAnterior;
+
+        vector<Bloco> botaoMenu;
+        vector<Bloco> botaoPausa;
 
         int deltaX;//distancia da borda
         int deltaY;//distancia minima de um bloco para o outro
@@ -39,15 +45,20 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         CascadeClassifier cascade;
         double scale;
 
-        void gerarBlocosIniciais();
+        void carregarBotoesMenu();
+        void carregarBotoesPausa();
 
         Jogo();//construtor
+
+        void gerarBlocosIniciais();
 
         void verificaBlocos();
         void geraBlocos();
         void desenhaBlocos(Mat& quadro);
         void desenhaPou(Mat& quadro);
-        void desenhaSelecao(Mat& quadro, int tempo, int centroX, int centroY);
+
+        int selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao);
+        void desenhaSelecao(Mat& quadro, int centroX, int centroY);
 
         void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
         void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);

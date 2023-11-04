@@ -3,16 +3,29 @@
 using namespace std;
 using namespace cv;
 
+void Jogo::carregarBotoesMenu(){
+    //necessito das imagens
+}
+
+void Jogo::carregarBotoesPausa(){
+    //necessito das imagens
+}
+
 Jogo::Jogo(){
     chao = imread("imagens/chao.png", IMREAD_UNCHANGED);
     terreno = imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
     pou = imread("imagens/pou.png", IMREAD_UNCHANGED);
-    selecaoBase = imread("imagens/selecaoMouse.png", IMREAD_UNCHANGED);
+    selecaoBase = imread("imagens/selecaoMouse1.png", IMREAD_UNCHANGED);
 
     perdeu = 0;
     menu = 1;
     comecouJogo = 0;
     tempoSelecionado = 0;
+    tempoBase = 3;
+    selecaoAnterior = 0;
+
+    carregarBotoesMenu();
+    carregarBotoesPausa();
 
     cascadeName = "haarcascade_frontalface_default.xml";
     scale = 1.5;
@@ -110,8 +123,70 @@ void Jogo::desenhaPou(Mat& quadro){
     }
 }
 
-void Jogo::desenhaSelecao(Mat& quadro, int tempo, int centroX, int centroY){
-    drawTransparency(quadro, selecaoBase, centroX - (selecaoBase.cols/2), centroY - (selecaoBase.rows/2));
+int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao){
+    Rect aux, recSelecao = Rect(posicaoX, posicaoY, tamanhoQuadrado, tamanhoQuadrado);
+
+    for(int i = 0; i < botao.size(); i++){
+        aux = Rect(botao[i].posicaoX, botao[i].posicaoY, botao[i].tamanhoX, botao[i].tamanhoY);
+        cout << "Intersecao das areas: " << (aux & recSelecao).area() << endl;
+        if((aux & recSelecao).area() >= 100){
+            return i;
+        }
+    }
+
+    return 0;
+}
+
+void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
+    if(tempoSelecionado == 0*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse1.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 1*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse2.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 2*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse3.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 3*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse4.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 4*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse5.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 5*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse6.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 6*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse7.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 7*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse8.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 8*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse9.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 9*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse10.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 10*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse11.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 11*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse12.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 12*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse13.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 13*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse14.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 14*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse15.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 15*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse16.png", IMREAD_UNCHANGED);
+    }else if(tempoSelecionado == 16*tempoBase){
+        selecaoBase = imread("imagens/selecaoMouse17.png", IMREAD_UNCHANGED);
+        tempoSelecionado = 0;
+    }
+
+    //ver se o mouse ta batendo em algum botao e em qual
+    int auxTamanho = (selecaoBase.rows*7)/10;
+    selecao = selecionado(auxTamanho, (centroX - (auxTamanho/2) + 1), (centroY - (auxTamanho/2) + 1));
+
+    if(selecao && (selecao == selecaoAnterior)){
+        tempoSelecionado++;
+    }else{
+        selecaoAnterior = selecao;
+        tempoSelecionado = 0;
+    }
+
+    drawTransparency(quadro, selecaoBase, centroX - (selecaoBase.cols/2) + 1, centroY - (selecaoBase.rows/2)) + 1;
 }
 
 void Jogo::drawTransparency(Mat frame, Mat transp, int xPos, int yPos){
@@ -199,7 +274,7 @@ int Jogo::desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, 
 
         if(((r.x + (r.width/2)) >= (deltaX + mov.tamanhoX)) && ((r.x + r.width/2) <= (quadro.cols - deltaX - mov.tamanhoX))){
             mov.xAtual = (r.x + r.width/2);
-            desenhaSelecao(quadro, tempoSelecionado, (r.x + (r.width/2) - 1), (r.y + (r.height/2) - 1));
+            desenhaSelecao(quadro, (r.x + (r.width/2) - 1), (r.y + (r.height/2) - 1));
         }
 
     }
