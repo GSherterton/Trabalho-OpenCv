@@ -7,13 +7,15 @@ Jogo::Jogo(){
     chao = imread("imagens/chao.png", IMREAD_UNCHANGED);
     terreno = imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
     pou = imread("imagens/pou.png", IMREAD_UNCHANGED);
+    selecaoBase = imread("imagens/selecaoMouse.png", IMREAD_UNCHANGED);
 
     perdeu = 0;
     menu = 1;
     comecouJogo = 0;
+    tempoSelecionado = 0;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1;
+    scale = 1.5;
     tryflip = true;
 
     mov.tamanhoX = pou.cols;//largura do pou
@@ -108,6 +110,10 @@ void Jogo::desenhaPou(Mat& quadro){
     }
 }
 
+void Jogo::desenhaSelecao(Mat& quadro, int tempo, int centroX, int centroY){
+    drawTransparency(quadro, selecaoBase, centroX - (selecaoBase.cols/2), centroY - (selecaoBase.rows/2));
+}
+
 void Jogo::drawTransparency(Mat frame, Mat transp, int xPos, int yPos){
     Mat mask;
     vector<Mat> layers;
@@ -149,7 +155,8 @@ void Jogo::desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool 
             mov.xAtual = (r.x + r.width/2);
         }
 
-        rectangle(quadro, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
+        rectangle(quadro, Point(cvRound(r.x + (r.width/2) - (r.width/8)), cvRound(r.y + (r.height/2) - (r.height/12))), Point(cvRound(r.x + (r.width/2) + (r.width/8)), cvRound(r.y + (r.height/2) + (r.height/6))), color, 3);
+        //rectangle(quadro, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
 
     verificaBlocos();
@@ -184,6 +191,19 @@ int Jogo::desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, 
     cascade.detectMultiScale(gray, faces, 1.3, 5);
     t = (double)getTickCount() - t;
 
+    for(size_t i = 0; i < faces.size(); i++){
+        Rect r = faces[i];
+
+        rectangle(quadro, Point(cvRound(r.x + (r.width/2) - (r.width/8)), cvRound(r.y + (r.height/2) - (r.height/12))), Point(cvRound(r.x + (r.width/2) + (r.width/8)), cvRound(r.y + (r.height/2) + (r.height/6))), color, 3);
+        //rectangle(quadro, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
+
+        if(((r.x + (r.width/2)) >= (deltaX + mov.tamanhoX)) && ((r.x + r.width/2) <= (quadro.cols - deltaX - mov.tamanhoX))){
+            mov.xAtual = (r.x + r.width/2);
+            desenhaSelecao(quadro, tempoSelecionado, (r.x + (r.width/2) - 1), (r.y + (r.height/2) - 1));
+        }
+
+    }
+
     larguraTela = quadro.cols;
     alturaTela = quadro.rows;
     mov.yMaximo = quadro.rows/2;//altura maxima que o pou pode chegar
@@ -212,7 +232,7 @@ void Jogo::menuInicio(){
         switch(menu){
             case 1:
                 desenhaMenuInicio(frame, cascade, scale, tryflip);//essa funcao vai alterar a variavel menu
-                menu = 2;
+                menu = 1;
 
                 break;
             case 2:
@@ -248,9 +268,9 @@ int Jogo::inicio(){
         return -1;
     }
 
-    //if(!capture.open("video.mp4")){ //para testar com um video
+    if(!capture.open("video.mp4")){ //para testar com um video
     //if(!capture.open(0)){ //para testar com a webcam
-    if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
+    //if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
     }

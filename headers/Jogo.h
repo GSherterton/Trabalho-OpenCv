@@ -13,6 +13,7 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Movimento mov;
         int pontuacao;
         int menu;
+        int tempoSelecionado;
 
         int deltaX;//distancia da borda
         int deltaY;//distancia minima de um bloco para o outro
@@ -21,6 +22,7 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Mat chao;
         Mat terreno;
         Mat pou;
+        Mat selecaoBase;
 
         int larguraTela;
         int alturaTela;
@@ -45,6 +47,7 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         void geraBlocos();
         void desenhaBlocos(Mat& quadro);
         void desenhaPou(Mat& quadro);
+        void desenhaSelecao(Mat& quadro, int tempo, int centroX, int centroY);
 
         void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
         void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
