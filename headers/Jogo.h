@@ -29,10 +29,12 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Mat terreno;
         Mat pou;
         Mat selecaoBase;
+        Mat botaoJogar;
 
         int larguraTela;
         int alturaTela;
 
+        bool carregouJogo;
         bool comecouJogo;
         bool perdeu;
 
@@ -57,7 +59,10 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         void desenhaBlocos(Mat& quadro);
         void desenhaPou(Mat& quadro);
 
+        Mat matBotao(Bloco botao);
+
         int selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao);
+        void desenhaBotao(vector<Bloco> botao, Mat& quadro);
         void desenhaSelecao(Mat& quadro, int centroX, int centroY);
 
         void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
