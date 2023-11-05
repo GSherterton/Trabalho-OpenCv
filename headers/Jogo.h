@@ -2,8 +2,11 @@
 #include <opencv2/opencv.hpp>
 #include "Movimento.h"
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "stdlib.h"
 #include "time.h"
+
 
 using namespace std;
 using namespace cv;
@@ -12,6 +15,7 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
     public:
         Movimento mov;
         int pontuacao;
+        int highScore;
         int menu;
         int tempoSelecionado;
         int tempoBase;//tempo base para a selecao de algo
@@ -46,6 +50,9 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         bool tryflip;//inverter a camera
         CascadeClassifier cascade;
         double scale;
+
+        void carregarHighScore();
+        void salvarHighScore();
 
         void carregarBotoesMenu();
         void carregarBotoesPausa();

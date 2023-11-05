@@ -10,6 +10,7 @@ class Movimento{
         int tamanhoX;
         int tamanhoY;
 
+        int pontos;
         int qtdSubiu;
         int yAtual;
         int yMaximo;

@@ -7,6 +7,7 @@ Movimento::Movimento(){
     inicio = true;
     velocidadeAtual = 0;
     qtdSubiu = 0;
+    pontos = 0;
 }
 
 void Movimento::deletaBloco(int index){
@@ -57,6 +58,7 @@ int Movimento::movimentoY(){
     }
 
     if(subindo && (yAtual <= yMaximo)){
+        pontos -= velocidadeAtual;
         subir(-velocidadeAtual);
     }else{
         yAtual += velocidadeAtual;

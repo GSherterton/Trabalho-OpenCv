@@ -12,6 +12,44 @@ void Jogo::carregarBotoesPausa(){//vai ficar para futuras edicoes
     //necessito das imagens
 }
 
+void Jogo::carregarHighScore(){
+    ifstream fp;
+
+    fp.open("highscore.txt");
+
+    if(!fp.is_open()){
+        cout << "Nao foi possivel abrir o arquivo\n";
+        return;
+    }
+
+    while(1){
+        fp >> highScore;
+
+        if(fp.eof()){
+            break;
+        }
+    }
+
+    fp.close();
+
+    cout << "High Score carregado com sucesso!\n";
+}
+
+void Jogo::salvarHighScore(){
+    ofstream fp;
+
+    fp.open("highscore.txt");
+
+    if(!fp.is_open()){
+        cout << "Nao foi possivel abrir o arquivo\n";
+        return;
+    }
+
+    fp << highScore << endl;
+
+    cout << "High Score salvo com sucesso\n";
+}
+
 Jogo::Jogo(){
     chao = imread("imagens/chao.png", IMREAD_UNCHANGED);
     terreno = imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
@@ -38,6 +76,7 @@ Jogo::Jogo(){
     mov.velocidadeInicial = -24;//negativa devido a orientacao dos eixos
 
     mov.deltaColisaoBase = 12;//delta para detectar a colisao
+    carregarHighScore();
 }
 
 void Jogo::gerarBlocosIniciais(){
@@ -121,7 +160,7 @@ void Jogo::desenhaPou(Mat& quadro){
     }else{
         drawTransparency(quadro, pou, (mov.xAtual - (pou.cols/2)), (mov.yAtual-pou.rows));//desenhando o pou
     }
-    pontuacao = mov.qtdSubiu;
+    pontuacao = mov.pontos;
 }
 
 int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao){
@@ -264,6 +303,11 @@ void Jogo::desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool 
         perdeu = 0;
         mov.deletaBlocos();
         mov.qtdSubiu = 0;
+
+        if(pontuacao > highScore){
+            highScore = pontuacao/10;
+        }
+
         return;
     }
 
@@ -341,6 +385,7 @@ void Jogo::menuInicio(){
             case 2:
                 if(!comecouJogo){
                     pontuacao = 0;
+                    mov.pontos = 0;
                     gerarBlocosIniciais();
                     comecouJogo = 1;
                     mov.yAtual = mov.yMaximo;
@@ -384,6 +429,8 @@ int Jogo::inicio(){
 
         menuInicio();
     }
+
+    salvarHighScore();
 
     return 0;
 }
