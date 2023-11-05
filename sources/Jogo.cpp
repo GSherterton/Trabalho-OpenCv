@@ -4,11 +4,50 @@ using namespace std;
 using namespace cv;
 
 void Jogo::carregarBotoesMenu(){
+    blocoAux = Bloco(botaoJogar.cols, botaoJogar.rows, (larguraTela/2) - (botaoJogar.cols/2), (alturaTela*4)/6, "jogar");
+    botaoMenu.push_back(blocoAux);//primeiro botao eh o de jogar
+}
+
+void Jogo::carregarBotoesPausa(){//vai ficar para futuras edicoes
     //necessito das imagens
 }
 
-void Jogo::carregarBotoesPausa(){
-    //necessito das imagens
+void Jogo::carregarHighScore(){
+    ifstream fp;
+
+    fp.open("highscore.txt");
+
+    if(!fp.is_open()){
+        cout << "Nao foi possivel abrir o arquivo\n";
+        return;
+    }
+
+    while(1){
+        fp >> highScore;
+
+        if(fp.eof()){
+            break;
+        }
+    }
+
+    fp.close();
+
+    cout << "High Score carregado com sucesso!\n";
+}
+
+void Jogo::salvarHighScore(){
+    ofstream fp;
+
+    fp.open("highscore.txt");
+
+    if(!fp.is_open()){
+        cout << "Nao foi possivel abrir o arquivo\n";
+        return;
+    }
+
+    fp << highScore << endl;
+
+    cout << "High Score salvo com sucesso\n";
 }
 
 Jogo::Jogo(){
@@ -16,19 +55,18 @@ Jogo::Jogo(){
     terreno = imread("imagens/plataformaTerra.png", IMREAD_UNCHANGED);
     pou = imread("imagens/pou.png", IMREAD_UNCHANGED);
     selecaoBase = imread("imagens/selecaoMouse1.png", IMREAD_UNCHANGED);
+    botaoJogar = imread("imagens/botaoJogar.png", IMREAD_UNCHANGED);
 
     perdeu = 0;
     menu = 1;
+    carregouJogo = 0;
     comecouJogo = 0;
     tempoSelecionado = 0;
     tempoBase = 3;
     selecaoAnterior = 0;
 
-    carregarBotoesMenu();
-    carregarBotoesPausa();
-
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1.5;
+    scale = 1;
     tryflip = true;
 
     mov.tamanhoX = pou.cols;//largura do pou
@@ -38,6 +76,7 @@ Jogo::Jogo(){
     mov.velocidadeInicial = -24;//negativa devido a orientacao dos eixos
 
     mov.deltaColisaoBase = 12;//delta para detectar a colisao
+    carregarHighScore();
 }
 
 void Jogo::gerarBlocosIniciais(){
@@ -121,6 +160,7 @@ void Jogo::desenhaPou(Mat& quadro){
     }else{
         drawTransparency(quadro, pou, (mov.xAtual - (pou.cols/2)), (mov.yAtual-pou.rows));//desenhando o pou
     }
+    pontuacao = mov.pontos;
 }
 
 int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao){
@@ -128,13 +168,25 @@ int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bl
 
     for(int i = 0; i < botao.size(); i++){
         aux = Rect(botao[i].posicaoX, botao[i].posicaoY, botao[i].tamanhoX, botao[i].tamanhoY);
-        cout << "Intersecao das areas: " << (aux & recSelecao).area() << endl;
+        //cout << "Intersecao das areas: " << (aux & recSelecao).area() << endl;
         if((aux & recSelecao).area() >= 100){
-            return i;
+            return i+1;
         }
     }
 
     return 0;
+}
+
+Mat Jogo::matBotao(Bloco botao){//fazer a correspondencia de todos os blocos/botoes
+    if((botao.nome).compare("jogar") == 0){
+        return botaoJogar;
+    }
+}
+
+void Jogo::desenhaBotao(vector<Bloco> botao, Mat& quadro){
+    for(int i = 0; i < botao.size(); i++){
+        drawTransparency(quadro, matBotao(botao[i]), botao[i].posicaoX, botao[i].posicaoY);
+    }
 }
 
 void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
@@ -173,11 +225,16 @@ void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
     }else if(tempoSelecionado == 16*tempoBase){
         selecaoBase = imread("imagens/selecaoMouse17.png", IMREAD_UNCHANGED);
         tempoSelecionado = 0;
+        menu = selecao+1;
+
+        drawTransparency(quadro, selecaoBase, centroX - (selecaoBase.cols/2) + 1, centroY - (selecaoBase.rows/2) + 1);
+
+        return;
     }
 
     //ver se o mouse ta batendo em algum botao e em qual
     int auxTamanho = (selecaoBase.rows*7)/10;
-    selecao = selecionado(auxTamanho, (centroX - (auxTamanho/2) + 1), (centroY - (auxTamanho/2) + 1));
+    selecao = selecionado(auxTamanho, (centroX - (auxTamanho/2) + 1), (centroY - (auxTamanho/2) + 1), botaoMenu);
 
     if(selecao && (selecao == selecaoAnterior)){
         tempoSelecionado++;
@@ -186,7 +243,7 @@ void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
         tempoSelecionado = 0;
     }
 
-    drawTransparency(quadro, selecaoBase, centroX - (selecaoBase.cols/2) + 1, centroY - (selecaoBase.rows/2)) + 1;
+    drawTransparency(quadro, selecaoBase, centroX - (selecaoBase.cols/2) + 1, centroY - (selecaoBase.rows/2) + 1);
 }
 
 void Jogo::drawTransparency(Mat frame, Mat transp, int xPos, int yPos){
@@ -238,11 +295,19 @@ void Jogo::desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool 
     geraBlocos();
     desenhaBlocos(quadro);
     desenhaPou(quadro);
+    cout << "Pontuacao: " << pontuacao << endl;
     if(perdeu){
+        system("mplayer -msglevel all=-1 audios/roblox-death-sound-effect.mp3 &");
         comecouJogo = 0;
         menu = 1;
         perdeu = 0;
         mov.deletaBlocos();
+        mov.qtdSubiu = 0;
+
+        if(pontuacao > highScore){
+            highScore = pontuacao/10;
+        }
+
         return;
     }
 
@@ -266,6 +331,24 @@ int Jogo::desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, 
     cascade.detectMultiScale(gray, faces, 1.3, 5);
     t = (double)getTickCount() - t;
 
+    if(!carregouJogo){
+        larguraTela = quadro.cols;
+        alturaTela = quadro.rows;
+        mov.yMaximo = quadro.rows/2;//altura maxima que o pou pode chegar
+        mov.xAtual = quadro.cols/2;
+
+        deltaX = ((quadro.cols/2) - (chao.cols/2));
+        deltaY = ((quadro.rows/7));
+
+        carregouJogo = 1;
+
+        carregarBotoesMenu();
+        carregarBotoesPausa();
+    }
+    
+
+    desenhaBotao(botaoMenu, quadro);
+
     for(size_t i = 0; i < faces.size(); i++){
         Rect r = faces[i];
 
@@ -278,17 +361,6 @@ int Jogo::desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, 
         }
 
     }
-
-    larguraTela = quadro.cols;
-    alturaTela = quadro.rows;
-    mov.yMaximo = quadro.rows/2;//altura maxima que o pou pode chegar
-    mov.yAtual = mov.yMaximo;
-    mov.xAtual = quadro.cols/2;
-
-    deltaX = ((quadro.cols/2) - (chao.cols/2));
-    deltaY = ((quadro.rows/7));
-
-    //desenhar o menu aqui
 
     imshow("result", quadro);
 
@@ -307,15 +379,18 @@ void Jogo::menuInicio(){
         switch(menu){
             case 1:
                 desenhaMenuInicio(frame, cascade, scale, tryflip);//essa funcao vai alterar a variavel menu
-                menu = 1;
+                //menu = 2;
 
                 break;
             case 2:
                 if(!comecouJogo){
                     pontuacao = 0;
+                    mov.pontos = 0;
                     gerarBlocosIniciais();
                     comecouJogo = 1;
+                    mov.yAtual = mov.yMaximo;
                 }
+
                 desenhaJogo(frame, cascade, scale, tryflip);
 
                 break;  
@@ -343,9 +418,9 @@ int Jogo::inicio(){
         return -1;
     }
 
-    if(!capture.open("video.mp4")){ //para testar com um video
+    //if(!capture.open("video.mp4")){ //para testar com um video
     //if(!capture.open(0)){ //para testar com a webcam
-    //if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
+    if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
     }
@@ -354,6 +429,8 @@ int Jogo::inicio(){
 
         menuInicio();
     }
+
+    salvarHighScore();
 
     return 0;
 }
