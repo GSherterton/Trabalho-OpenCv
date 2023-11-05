@@ -38,6 +38,18 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Mat botaoContinuar;
         Mat botaoSair;
         Mat melhorPontuacao;
+        Mat matPontuacao;
+        Mat numero;
+        Mat zero;
+        Mat um;
+        Mat dois;
+        Mat tres;
+        Mat quatro;
+        Mat cinco;
+        Mat seis;
+        Mat sete;
+        Mat oito;
+        Mat nove;
 
         int larguraTela;
         int alturaTela;
@@ -70,6 +82,9 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         void desenhaBlocos(Mat& quadro);
         void desenhaPou(Mat& quadro);
 
+        Mat matNumero(char numero);
+        Mat desenhaNumero(int valor);
+
         Mat matBotao(Bloco botao);
 
         int selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao);
@@ -79,7 +94,8 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         void drawTransparency(Mat frame, Mat transp, int xPos, int yPos);
         void drawTransRect(Mat frame, Scalar color, double alpha, Rect region);
         void desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
-        int desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
+        void desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
+        void desenhaMenuPausa(Mat& img, CascadeClassifier& cascade, double scale, bool tryflip);
         void conquistas();
         
         void menuInicio();
