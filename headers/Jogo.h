@@ -39,7 +39,6 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Mat botaoSair;
         Mat melhorPontuacao;
         Mat matPontuacao;
-        Mat numero;
         Mat zero;
         Mat um;
         Mat dois;
@@ -83,7 +82,7 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         void desenhaPou(Mat& quadro);
 
         Mat matNumero(char numero);
-        Mat desenhaNumero(int valor);
+        void desenhaNumero(Mat& quadro, int valor, int posicaoX, int posicaoY);
 
         Mat matBotao(Bloco botao);
 

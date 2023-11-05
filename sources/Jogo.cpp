@@ -180,7 +180,7 @@ void Jogo::desenhaPou(Mat& quadro){
     }else{
         drawTransparency(quadro, pou, (mov.xAtual - (pou.cols/2)), (mov.yAtual-pou.rows));//desenhando o pou
     }
-    pontuacao = mov.pontos;
+    pontuacao = mov.pontos/10;
 }
 
 Mat Jogo::matNumero(char numero){
@@ -207,17 +207,14 @@ Mat Jogo::matNumero(char numero){
     }
 }
 
-Mat Jogo::desenhaNumero(int valor, int posX, int poxY){
+void Jogo::desenhaNumero(Mat& quadro, int valor, int posicaoX, int posicaoY){
     string numero = to_string(valor);
-    Mat aux;
     int shift = 0;
 
     for(int i = 0; i < numero.size(); i++){
-        drawTransparency(aux, matNumero(numero[i]), shift, 0);
+        drawTransparency(quadro, matNumero(numero[i]), posicaoX + shift, posicaoY);
         shift += matNumero(numero[i]).cols;
     }
-    
-    return aux;
 }
 
 int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bloco> botao){
@@ -356,8 +353,7 @@ void Jogo::desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool 
 
     //desenhar a pontuacao
     drawTransparency(quadro, matPontuacao, 10, alturaTela/26);
-    numero = desenhaNumero(pontuacao);
-    drawTransparency(quadro, numero, matPontuacao.cols+20, alturaTela/26);
+    desenhaNumero(quadro, pontuacao, matPontuacao.cols+20, alturaTela/26);
 
     for(size_t i = 0; i < faces.size(); i++){
         Rect r = faces[i];
@@ -387,7 +383,7 @@ void Jogo::desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool 
         mov.qtdSubiu = 0;
 
         if(pontuacao > highScore){
-            highScore = pontuacao/10;
+            highScore = pontuacao;
         }
 
         return;
@@ -439,8 +435,7 @@ void Jogo::desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale,
     desenhaBotao(botoesMenu, quadro);
 
     drawTransparency(quadro, melhorPontuacao, (larguraTela/2) - (melhorPontuacao.cols/2), (alturaTela*2)/6);
-    numero = desenhaNumero(highScore);
-    drawTransparency(quadro, numero, (larguraTela/2) - (numero.cols/2), (alturaTela*2)/6 + melhorPontuacao.rows);
+    desenhaNumero(quadro, highScore, (larguraTela/2) - (melhorPontuacao.cols/2), (alturaTela*2)/6 + melhorPontuacao.rows);
 
     for(size_t i = 0; i < faces.size(); i++){
         Rect r = faces[i];
