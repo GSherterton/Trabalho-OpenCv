@@ -4,8 +4,10 @@ using namespace std;
 using namespace cv;
 
 void Jogo::carregarBotoesMenu(){
-    blocoAux = Bloco(botaoJogar.cols, botaoJogar.rows, (larguraTela/2) - (botaoJogar.cols/2), (alturaTela*4)/6, "jogar");
-    botaoMenu.push_back(blocoAux);//primeiro botao eh o de jogar
+    blocoAux = Bloco(botaoJogar.cols, botaoJogar.rows, (larguraTela/2) - (botaoJogar.cols/2), (alturaTela)/2, "jogar");
+    botoesMenu.push_back(blocoAux);//primeiro botao eh o de jogar
+    blocoAux = Bloco(botaoSair.cols, botaoSair.rows, (larguraTela/2) - (botaoSair.cols/2), (alturaTela*4)/6, "sair");
+    botoesMenu.push_back(blocoAux);//segundo eh o de sair
 }
 
 void Jogo::carregarBotoesPausa(){//vai ficar para futuras edicoes
@@ -56,6 +58,10 @@ Jogo::Jogo(){
     pou = imread("imagens/pou.png", IMREAD_UNCHANGED);
     selecaoBase = imread("imagens/selecaoMouse1.png", IMREAD_UNCHANGED);
     botaoJogar = imread("imagens/botaoJogar.png", IMREAD_UNCHANGED);
+    botaoPausa = imread("imagens/botaoPausa.png", IMREAD_UNCHANGED);
+    botaoContinuar = imread("imagens/botaoContinuar.png", IMREAD_UNCHANGED);
+    botaoSair = imread("imagens/botaoSair.png", IMREAD_UNCHANGED);
+    melhorPontuacao = imread("imagens/melhorPontuacao.png", IMREAD_UNCHANGED);
 
     perdeu = 0;
     menu = 1;
@@ -66,7 +72,7 @@ Jogo::Jogo(){
     selecaoAnterior = 0;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1;
+    scale = 1.5;
     tryflip = true;
 
     mov.tamanhoX = pou.cols;//largura do pou
@@ -180,6 +186,8 @@ int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bl
 Mat Jogo::matBotao(Bloco botao){//fazer a correspondencia de todos os blocos/botoes
     if((botao.nome).compare("jogar") == 0){
         return botaoJogar;
+    }else if((botao.nome).compare("sair") == 0){
+        return botaoSair;
     }
 }
 
@@ -234,7 +242,7 @@ void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
 
     //ver se o mouse ta batendo em algum botao e em qual
     int auxTamanho = (selecaoBase.rows*7)/10;
-    selecao = selecionado(auxTamanho, (centroX - (auxTamanho/2) + 1), (centroY - (auxTamanho/2) + 1), botaoMenu);
+    selecao = selecionado(auxTamanho, (centroX - (auxTamanho/2) + 1), (centroY - (auxTamanho/2) + 1), botoesMenu);
 
     if(selecao && (selecao == selecaoAnterior)){
         tempoSelecionado++;
@@ -291,6 +299,9 @@ void Jogo::desenhaJogo(Mat& img, CascadeClassifier& cascade, double scale, bool 
         //rectangle(quadro, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width-1)), cvRound((r.y + r.height-1))), color, 3);
     }
 
+    //desenha o botao de pausa
+    drawTransparency(quadro, botaoPausa, larguraTela - botaoPausa.cols - larguraTela/10, alturaTela/20);
+
     verificaBlocos();
     geraBlocos();
     desenhaBlocos(quadro);
@@ -344,10 +355,12 @@ int Jogo::desenhaMenuInicio(Mat& img, CascadeClassifier& cascade, double scale, 
 
         carregarBotoesMenu();
         carregarBotoesPausa();
+
+        //cout << "Jogo carregado\n";
     }
     
 
-    desenhaBotao(botaoMenu, quadro);
+    desenhaBotao(botoesMenu, quadro);
 
     for(size_t i = 0; i < faces.size(); i++){
         Rect r = faces[i];
@@ -395,10 +408,14 @@ void Jogo::menuInicio(){
 
                 break;  
             case 3:
-                conquistas();
+                //desenhaMenuPausa(frame, cascade, scale, tryflip);
 
                 break;
             case 4:
+                //conquistas();
+
+                break;
+            case 5:
                 return;      
         }
 
@@ -418,9 +435,9 @@ int Jogo::inicio(){
         return -1;
     }
 
-    //if(!capture.open("video.mp4")){ //para testar com um video
+    if(!capture.open("video.mp4")){ //para testar com um video
     //if(!capture.open(0)){ //para testar com a webcam
-    if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
+    //if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
     }

@@ -22,8 +22,8 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         int selecao;
         int selecaoAnterior;
 
-        vector<Bloco> botaoMenu;
-        vector<Bloco> botaoPausa;
+        vector<Bloco> botoesMenu;
+        vector<Bloco> botoesPausa;
 
         int deltaX;//distancia da borda
         int deltaY;//distancia minima de um bloco para o outro
@@ -34,6 +34,10 @@ class Jogo{//tem que fazer mudancas com relacao aos blocos
         Mat pou;
         Mat selecaoBase;
         Mat botaoJogar;
+        Mat botaoPausa;
+        Mat botaoContinuar;
+        Mat botaoSair;
+        Mat melhorPontuacao;
 
         int larguraTela;
         int alturaTela;
