@@ -1,4 +1,4 @@
-<h1 align="center"> Trabalho OpenCv </h1>
+<h1 align="center"> Sky Jump </h1>
 
 </h1>
 Projeto final criado para a disciplina de Linguagem de Programação I (2023.1), com o desenvolvimento de um jogo básico, utilizando a biblioteca OpenCV, feito para avaliar, na prática, os conhecimentos ensinados sobre Programação Orientada a Objetos e o uso do algoritmo da OpenCV de detecção de objetos, em C++.
@@ -42,8 +42,8 @@ Professor: Derzu Omaia.
 - As bibliotecas [OpenCV](https://sites.google.com/site/derzuomaia/tutoriais/instala%C3%A7%C3%A3o-opencv-no-linux-ubuntu), [Chrono](https://api.projectchrono.org/tutorial_install_chrono.html) e [MPlayer](https://howtoinstall.co/package/mplayer) devem ser instaladas antes de rodar o jogo.
 
 - Rodando no Linux Ubuntu:
-    - A linha de comando para compilar o código é: ```g++ /sources.cpp `pkg-config --cflags opencv4` `pkg-config --libs --static opencv4` ```
-    - Depois de compilado, basta rodar o arquivo executável. (ex: ```./a.out```)
+    - A linha de comando para compilar o código é: ```g++ sources/*.cpp `pkg-config --cflags opencv4` `pkg-config --libs --static opencv4` -I headers -o teste` ```
+    - Depois de compilado, basta rodar o arquivo executável. (ex: ```./teste```)
 
 <p>&nbsp;</p>
 
