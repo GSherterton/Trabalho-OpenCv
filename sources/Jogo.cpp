@@ -4,9 +4,9 @@ using namespace std;
 using namespace cv;
 
 void Jogo::carregarBotoesMenu(){
-    blocoAux = Bloco(botaoJogar.cols, botaoJogar.rows, (larguraTela/2) - (botaoJogar.cols/2), (alturaTela*4)/6, "jogar");
+    blocoAux = Bloco(botaoJogar.cols, botaoJogar.rows, (larguraTela/2) - (botaoJogar.cols/2), (alturaTela*3)/6, "jogar");
     botoesMenu.push_back(blocoAux);//primeiro botao eh o de jogar
-    blocoAux = Bloco(botaoSair.cols, botaoSair.rows, (larguraTela/2) - (botaoSair.cols/2), (alturaTela*5)/6, "sair");
+    blocoAux = Bloco(botaoSair.cols, botaoSair.rows, (larguraTela/2) - (botaoSair.cols/2), (alturaTela*4)/6, "sair");
     botoesMenu.push_back(blocoAux);//segundo eh o de sair
 }
 
@@ -82,7 +82,7 @@ Jogo::Jogo(){
     carregouJogo = 0;
     comecouJogo = 0;
     tempoSelecionado = 0;
-    tempoBase = 3;
+    tempoBase = 2;
     selecaoAnterior = 0;
 
     cascadeName = "haarcascade_frontalface_default.xml";
@@ -224,7 +224,7 @@ int Jogo::selecionado(int tamanhoQuadrado, int posicaoX, int posicaoY, vector<Bl
         aux = Rect(botao[i].posicaoX, botao[i].posicaoY, botao[i].tamanhoX, botao[i].tamanhoY);
         //cout << "Intersecao das areas: " << (aux & recSelecao).area() << endl;
         if((aux & recSelecao).area() >= 100){
-            return i;
+            return i+1;
         }
     }
 
@@ -288,10 +288,10 @@ void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
         selecaoBase = imread("imagens/selecaoMouse17.png", IMREAD_UNCHANGED);
         tempoSelecionado = 0;
         
-        if(selecao == 0){//mecanica de alternancia entre menus
+        if(selecao == 1){//mecanica de alternancia entre menus
             menu = 2;
-        }else if(selecao == 1){
-            if(menu == 0){
+        }else if(selecao == 2){
+            if(menu == 1){
                 menu = 0;
             }else{
                 menu = 1;
@@ -306,6 +306,7 @@ void Jogo::desenhaSelecao(Mat& quadro, int centroX, int centroY){
     //ver se o mouse ta batendo em algum botao e em qual
     int auxTamanho = (selecaoBase.rows*7)/10;
     selecao = selecionado(auxTamanho, (centroX - (auxTamanho/2) + 1), (centroY - (auxTamanho/2) + 1), botoesMenu);
+    //cout << "Selecionado: " << selecao << endl;
 
     if(selecao && (selecao == selecaoAnterior)){
         tempoSelecionado++;
@@ -500,7 +501,7 @@ void Jogo::menuInicio(){
         switch(menu){
             case 1:
                 desenhaMenuInicio(frame, cascade, scale, tryflip);//essa funcao vai alterar a variavel menu
-                menu = 2;//comentar isso depois que for usar a camera
+                //menu = 2;//comentar isso depois que for usar a camera
 
                 break;
             case 2:
@@ -524,6 +525,7 @@ void Jogo::menuInicio(){
 
                 break;
             case 0:
+                cout << "Saindo\n";
                 return;      
         }
 
