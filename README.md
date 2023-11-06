@@ -25,7 +25,7 @@ Professor: Derzu Omaia.
 
 ## Diagrama de classes
 
-
+![Diagrama](https://github.com/GSherterton/Trabalho-OpenCv/blob/main/UML%20OpenCv.jpg?raw=true)
 
 <p>&nbsp;</p>
 
