@@ -86,7 +86,7 @@ Jogo::Jogo(){
     selecaoAnterior = 0;
 
     cascadeName = "haarcascade_frontalface_default.xml";
-    scale = 1.5;
+    scale = 1;
     tryflip = true;
 
     mov.tamanhoX = pou.cols;//largura do pou
@@ -543,8 +543,8 @@ int Jogo::inicio(){
         return -1;
     }
 
-    if(!capture.open("video.mp4")){ //para testar com um video
-    //if(!capture.open(0)){ //para testar com a webcam
+    //if(!capture.open("video.mp4")){ //para testar com um video
+    if(!capture.open(0)){ //para testar com a webcam
     //if(!capture.open("rtsp://192.168.27.106:8080/h264_ulaw.sdp")){ // tentar conectar no celular
         cout << "Capture from camera #0 didn't work" << endl;
         return 1;
