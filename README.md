@@ -50,6 +50,6 @@ Professor: Derzu Omaia.
 ## Contribuidores
 
 | <a href="https://www.linkedin.com/in/gabrielcformiga/" target="_blank">**Gabriel Campelo Formiga**</a> | <a href="https://www.linkedin.com/in/gsherterton/" target="_blank">**Gabriel Sherterton**</a> | 
-| :---------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
+| :---------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: | 
 | <img src="https://avatars.githubusercontent.com/u/130695548?v=4" width="200px">          | <img src="https://avatars.githubusercontent.com/u/129867791?v=4" width="200px">          | 
 | <a href="https://github.com/GabrielCFormiga" target="_blank">`github.com/GabrielCFormiga`</a>  | <a href="https://github.com/GSherterton" target="_blank">`github.com/GSherterton`</a> | 
